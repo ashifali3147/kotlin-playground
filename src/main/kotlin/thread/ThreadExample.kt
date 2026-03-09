@@ -1,12 +1,14 @@
 package thread
 
+import utils.LogColor
+
 class ThreadExample : Restaurant {
 
     fun handleCustomer(name: String) {
         takeOrder(name)
         prepareFood(name)
         serveFood(name)
-        println("--------------------")
+        LogColor.log(LogColor.YELLOW, "--------------------")
     }
 
     override fun prepareFood(name: String) {
