@@ -1,5 +1,7 @@
+import utils.LogColor
+
 fun main() {
-    println("====================[Kotlin Playground]====================")
+    LogColor.log(message = "====================[Kotlin Playground]====================")
     //Write your code here
-    println("===========================[END]===========================")
+    LogColor.log(message = "===========================[END]===========================")
 }
