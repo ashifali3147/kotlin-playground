@@ -10,3 +10,13 @@
 | T06 | Connectivity Listeners | | | | | | |
 | T07 | Report Exporter | | | | | | |
 | T08 | Connection Pool | | | | | | |
+| K01 | Home Screen | | | | | | |
+| K02 | Receipt Main-Safety | | | | | | |
+| K03 | Video Cancel | | | | | | |
+| K04 | Order Tracker | | | | | | |
+| K05 | Menu Prefetch | | | | | | |
+| K06 | Token Refresh | | | | | | |
+| K07 | Photo Uploads | | | | | | |
+| K08 | Location SDK | | | | | | |
+| K09 | Retry Backoff | | | | | | |
+| K10 | Predict Output | | | | | | |

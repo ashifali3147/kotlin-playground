@@ -42,11 +42,23 @@ Being stuck for 45 minutes is part of the training, not a failure.
 | T08 | [Build a Connection Pool](src/main/kotlin/challenges/threads/c08_connectionpool/README.md) 🏗 | `Semaphore`, resource ownership, failure paths | ★★★★☆ |
 
 ## Track 2 · Coroutines *(unlocks after T08)*
-Sequential-vs-parallel `async` · blocking inside coroutines · cancellation ·
-scope leaks · `supervisorScope` and exception handling · `Mutex` · timeouts and cleanup ·
-limiting how much runs at once · callback → `suspendCancellableCoroutine` · retry with backoff
 
-## Track 3 · Flow
+Tests use `kotlinx-coroutines-test` (`runTest`, virtual time). Learning to read those tests is part of the track.
+
+| # | Challenge | Concept | Difficulty |
+|---|---|---|---|
+| K01 | [The Home Screen That Ignores You](src/main/kotlin/challenges/coroutines/k01_home/README.md) | Structured concurrency, `async`, `GlobalScope` | ★★☆☆☆ |
+| K02 | ["But It's a Suspend Function!"](src/main/kotlin/challenges/coroutines/k02_receipt/README.md) | Dispatchers, main-safety, `withContext` | ★★☆☆☆ |
+| K03 | [The Cancel Button That Doesn't Cancel](src/main/kotlin/challenges/coroutines/k03_upload/README.md) | Cooperative cancellation, swallowed `CancellationException`, `NonCancellable` | ★★★☆☆ |
+| K04 | [The Tracker That Polls Forever](src/main/kotlin/challenges/coroutines/k04_tracking/README.md) | Owning a scope, `Job` lifecycle, `SupervisorJob` | ★★★☆☆ |
+| K05 | [One Bad Photo Breaks the Whole Menu](src/main/kotlin/challenges/coroutines/k05_prefetch/README.md) | `supervisorScope`, exception propagation, `CoroutineExceptionHandler` | ★★★☆☆ |
+| K06 | [The Refresh Token Stampede](src/main/kotlin/challenges/coroutines/k06_token/README.md) | `Mutex`, double-check, compare-and-set | ★★★★☆ |
+| K07 | [HTTP 429: Too Many Uploads](src/main/kotlin/challenges/coroutines/k07_photos/README.md) | `Semaphore`, the `limitedParallelism` trap | ★★★☆☆ |
+| K08 | [GPS That Never Turns Off](src/main/kotlin/challenges/coroutines/k08_location/README.md) | `suspendCancellableCoroutine`, `withTimeoutOrNull` | ★★★☆☆ |
+| K09 | [Build: Retry With Exponential Backoff](src/main/kotlin/challenges/coroutines/k09_retry/README.md) 🏗 | Backoff, cancellation-safe retries | ★★★☆☆ |
+| K10 | [Interview Round: "What Does This Print?"](src/main/kotlin/challenges/coroutines/k10_predict/README.md) 🔍 | Execution order, propagation, `finally` | ★★★☆☆ |
+
+## Track 3 · Flow *(unlocks after K10)*
 Cold vs hot · search-as-you-type · one-shot UI events · `combine` vs `zip` ·
 exception transparency and `flowOn` · backpressure · `callbackFlow` leaks · testing with Turbine
 
