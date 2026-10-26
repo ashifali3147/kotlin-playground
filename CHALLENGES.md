@@ -35,9 +35,13 @@ Being stuck for 45 minutes is part of the training, not a failure.
 | T01 | [The Analytics Numbers Don't Add Up](src/main/kotlin/challenges/threads/c01_analytics/README.md) | Race conditions, atomicity, compound actions | ★★☆☆☆ |
 | T02 | [The Rider App That Never Stops Uploading](src/main/kotlin/challenges/threads/c02_uploader/README.md) | Visibility, happens-before, `join` | ★★★☆☆ |
 | T03 | [The Wallet That Freezes (and Prints Money)](src/main/kotlin/challenges/threads/c03_wallet/README.md) | Deadlock, lock ordering, check-then-act | ★★★☆☆ |
-| T04+ | *Unlocks after T03* | Lazy init, wait/notify, CME, thread pools, bounded pool | |
+| T04 | [The Avatar That Downloads 40 Times](src/main/kotlin/challenges/threads/c04_avatarcache/README.md) | Check-then-act, memoization, lock scope | ★★★★☆ |
+| T05 | [Dinner Rush Takes Down Dispatch](src/main/kotlin/challenges/threads/c05_dispatchqueue/README.md) | `wait`/`notify`, conditions, bounded blocking queue | ★★★☆☆ |
+| T06 | [The Listener That Crashes on a Single Thread](src/main/kotlin/challenges/threads/c06_listeners/README.md) | CME, copy-on-write, calling foreign code under a lock | ★★★☆☆ |
+| T07 | [The Export Button That Kills the Server](src/main/kotlin/challenges/threads/c07_reportexport/README.md) | Executor lifetime, thread leaks, pool-starvation deadlock | ★★★★☆ |
+| T08 | [Build a Connection Pool](src/main/kotlin/challenges/threads/c08_connectionpool/README.md) 🏗 | `Semaphore`, resource ownership, failure paths | ★★★★☆ |
 
-## Track 2 · Coroutines *(unlocks after T03)*
+## Track 2 · Coroutines *(unlocks after T08)*
 Sequential-vs-parallel `async` · blocking inside coroutines · cancellation ·
 scope leaks · `supervisorScope` and exception handling · `Mutex` · timeouts and cleanup ·
 limiting how much runs at once · callback → `suspendCancellableCoroutine` · retry with backoff
