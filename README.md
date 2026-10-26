@@ -28,3 +28,12 @@ gradle wrapper
 ```
 
 Main entrypoint is `src/main/kotlin/Main.kt`.
+
+## Concurrency Dojo
+
+Interview-practice challenges on threads, coroutines and Flow live in `src/main/kotlin/challenges/`.
+Start at [CHALLENGES.md](CHALLENGES.md).
+
+```bash
+./gradlew test --tests "challenges.threads.C01*"
+```
