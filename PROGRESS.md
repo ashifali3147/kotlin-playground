@@ -29,3 +29,6 @@
 | F07 | Socket callbackFlow | | | | | | |
 | F08 | Draft Auto-Saver | | | | | | |
 | F09 | Predict Flow Output | | | | | | |
+| B01 | Image Loader | | | | | | |
+| B02 | Duplicate Orders | | | | | | |
+| B03 | Tracking Screen | | | | | | |

@@ -72,5 +72,13 @@ Tests use `kotlinx-coroutines-test` (`runTest`, virtual time). Learning to read 
 | F08 | [Build: The Review Draft Auto-Saver](src/main/kotlin/challenges/flow/f08_autosave/README.md) 🏗 | Debounce + conflate + Mutex, status `StateFlow` | ★★★★☆ |
 | F09 | [Interview Round: "What Does This Flow Print?"](src/main/kotlin/challenges/flow/f09_predict/README.md) 🔍 | Cold flows, buffering, conflation, `catch`, `combine` | ★★★☆☆ |
 
-## Track 4 · Boss levels
-Production incidents with several bugs mixed together.
+## Track 4 · Boss levels *(unlocks after F08)*
+
+Production incidents: one realistic component, several bugs from every track, and a README that reads like an incident report.
+The tests are symptoms, not bugs. Each boss ends with a post-mortem debrief in your journal.
+
+| # | Incident | Bugs | Mixes | Difficulty |
+|---|---|---|---|---|
+| B01 | [The Image Loader](src/main/kotlin/challenges/boss/b01_imageloader/README.md) | 6 | Thread-safe LRU, request dedup, dispatchers, `Semaphore`, failure cleanup, reference-counted cancellation | ★★★★★ |
+| B02 | [Duplicate Orders](src/main/kotlin/challenges/boss/b02_outbox/README.md) | 5 | Thread-safe enqueue, one sync loop, `collectLatest`, per-order ordering, backoff, a `Channel` doorbell | ★★★★★ |
+| B03 | [The Tracking Screen](src/main/kotlin/challenges/boss/b03_tracking/README.md) | 7 | Shared `callbackFlow`, non-blocking callbacks, polling fallback, ETA off main, one-shot events, `transformWhile` | ★★★★★ |
