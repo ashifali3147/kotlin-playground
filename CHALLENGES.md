@@ -59,8 +59,18 @@ Tests use `kotlinx-coroutines-test` (`runTest`, virtual time). Learning to read 
 | K10 | [Interview Round: "What Does This Print?"](src/main/kotlin/challenges/coroutines/k10_predict/README.md) 🔍 | Execution order, propagation, `finally` | ★★★☆☆ |
 
 ## Track 3 · Flow *(unlocks after K10)*
-Cold vs hot · search-as-you-type · one-shot UI events · `combine` vs `zip` ·
-exception transparency and `flowOn` · backpressure · `callbackFlow` leaks · testing with Turbine
+
+| # | Challenge | Concept | Difficulty |
+|---|---|---|---|
+| F01 | [The Cart That's Fetched Three Times](src/main/kotlin/challenges/flow/f01_cart/README.md) | Cold vs hot, `shareIn`, `WhileSubscribed`, replay expiration | ★★★☆☆ |
+| F02 | [Search That Shows the Wrong Restaurants](src/main/kotlin/challenges/flow/f02_search/README.md) | `debounce`, `distinctUntilChanged`, `flatMapLatest`, inner `catch` | ★★★☆☆ |
+| F03 | [The Snackbar That Shows Twice (or Never)](src/main/kotlin/challenges/flow/f03_events/README.md) | One-shot events: StateFlow vs SharedFlow vs Channel, Turbine | ★★★☆☆ |
+| F04 | [The Checkout Total That Lies](src/main/kotlin/challenges/flow/f04_checkout/README.md) | `zip` vs `combine`, `mapLatest`, pipeline design | ★★★☆☆ |
+| F05 | [The Offline Menu That Crashes Online](src/main/kotlin/challenges/flow/f05_menu/README.md) | Exception transparency, `flowOn`, `retryWhen` | ★★★★☆ |
+| F06 | [The Rider Marker That Lags Behind](src/main/kotlin/challenges/flow/f06_backpressure/README.md) | Backpressure: `conflate` vs `collectLatest` vs `buffer` | ★★★☆☆ |
+| F07 | [The Socket That Never Lets Go](src/main/kotlin/challenges/flow/f07_socket/README.md) | `callbackFlow`, `awaitClose`, `trySend`, closing with a cause | ★★★☆☆ |
+| F08 | [Build: The Review Draft Auto-Saver](src/main/kotlin/challenges/flow/f08_autosave/README.md) 🏗 | Debounce + conflate + Mutex, status `StateFlow` | ★★★★☆ |
+| F09 | [Interview Round: "What Does This Flow Print?"](src/main/kotlin/challenges/flow/f09_predict/README.md) 🔍 | Cold flows, buffering, conflation, `catch`, `combine` | ★★★☆☆ |
 
 ## Track 4 · Boss levels
 Production incidents with several bugs mixed together.

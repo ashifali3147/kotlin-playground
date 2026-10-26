@@ -20,3 +20,12 @@
 | K08 | Location SDK | | | | | | |
 | K09 | Retry Backoff | | | | | | |
 | K10 | Predict Output | | | | | | |
+| F01 | Cart Sharing | | | | | | |
+| F02 | Search | | | | | | |
+| F03 | One-shot Events | | | | | | |
+| F04 | Checkout Combine | | | | | | |
+| F05 | Offline Menu | | | | | | |
+| F06 | Backpressure | | | | | | |
+| F07 | Socket callbackFlow | | | | | | |
+| F08 | Draft Auto-Saver | | | | | | |
+| F09 | Predict Flow Output | | | | | | |
