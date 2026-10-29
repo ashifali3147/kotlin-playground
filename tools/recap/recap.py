@@ -9,7 +9,9 @@ unset means VoiceStudio when its local backend is running, else macOS say. The v
 Remotion project in tools/recap/video.
 """
 
+import array
 import json
+import math
 import os
 import re
 import shutil
@@ -323,16 +325,20 @@ def voicestudio_up():
 
 
 # A designed voice saved as a clone profile, so every scene is the same speaker. Without a profile,
-# OmniVoice invents a new speaker per request.
+# OmniVoice invents a new speaker per request. Cloning copies the reference's delivery as well as its
+# timbre, so the reference is written as lively storytelling: a flat reference clones flat.
+# Style + seed + text regenerate the reference byte for byte.
 NARRATOR = "Dojo Narrator"
-NARRATOR_STYLE = "male, middle-aged, low pitch, indian accent"
-NARRATOR_SEED = 42
-NARRATOR_REF = ("नमस्ते, मैं आपका dojo narrator हूँ. आज हम एक bug समझेंगे, आराम से, step by step. "
-                "Thread, coroutine और Flow, सब simple तरीके से.")
+NARRATOR_STYLE = "male, young adult, low pitch, indian accent"
+NARRATOR_SEED = 23
+NARRATOR_REF = ("अरे, ये देखो! Bug यहीं छुपा बैठा था... सोचो, तुमने undo दबाया, और कुछ हुआ ही नहीं? "
+                "Frustrating है ना! चलो, आराम से समझते हैं, step by step. और हाँ, interview में ये ज़रूर पूछा जाता है!")
+VOICE_SPEED = float(os.environ.get("DOJO_VOICE_SPEED", "0.92"))
+QUALITY_STEPS = 32  # VoiceStudio's default is 16; 32 is the model's documented quality setting
 
 
-def voicestudio(path, data=None, headers=None, timeout=300):
-    req = urllib.request.Request(f"{VOICESTUDIO_URL}{path}", data=data, headers=headers or {})
+def voicestudio(path, data=None, headers=None, timeout=300, method=None):
+    req = urllib.request.Request(f"{VOICESTUDIO_URL}{path}", data=data, headers=headers or {}, method=method)
     try:
         with urllib.request.urlopen(req, timeout=timeout) as resp:
             return resp.read()
@@ -348,12 +354,15 @@ def voicestudio(path, data=None, headers=None, timeout=300):
 def ensure_narrator():
     """Creates the narrator profile on first use: design the voice once, then clone it for every scene."""
     profiles = json.loads(voicestudio("/profiles", timeout=30))
-    if any(p.get("name") == NARRATOR for p in profiles):
+    existing = [p for p in profiles if p.get("name") == NARRATOR]
+    if any(p.get("ref_text") == NARRATOR_REF for p in existing):
         return
+    for old in existing:  # an older narrator design: replace it rather than keep two voices with one name
+        voicestudio(f"/profiles/{old['id']}", headers={}, timeout=30, method="DELETE")
     print(f"  (creating the '{NARRATOR}' voice in VoiceStudio, one time)")
     ref = voicestudio("/v1/audio/speech", json.dumps({
         "model": "tts-1", "voice": "alloy", "input": NARRATOR_REF, "response_format": "wav",
-        "instructions": NARRATOR_STYLE, "seed": NARRATOR_SEED,
+        "instructions": NARRATOR_STYLE, "seed": NARRATOR_SEED, "num_step": QUALITY_STEPS,
     }).encode(), {"Content-Type": "application/json"})
     boundary = "dojo-narrator-boundary"
     fields = {"name": NARRATOR, "kind": "clone", "language": "Hindi", "ref_text": NARRATOR_REF}
@@ -376,12 +385,15 @@ def tts_provider():
     return "say"
 
 
-def tts(text, out_wav, provider):
+def tts(text, out_wav, provider, lang):
     """Writes 24 kHz mono 16-bit WAV."""
     raw = out_wav.with_suffix(".raw")
     if provider == "voicestudio":
         # OpenAI-compatible endpoint of the local VoiceStudio backend; loopback needs no key.
-        body = {"model": "tts-1", "voice": os.environ.get("DOJO_VOICE", NARRATOR), "input": text, "response_format": "wav"}
+        # Its [pause] markers are read aloud on this endpoint, so pauses are added afterwards by breathe().
+        # Naming the language stops it guessing from mixed Devanagari/English and anglicising the Hindi.
+        body = {"model": "tts-1", "voice": os.environ.get("DOJO_VOICE", NARRATOR), "input": text,
+                "response_format": "wav", "language": lang, "speed": VOICE_SPEED, "num_step": QUALITY_STEPS}
         raw.write_bytes(voicestudio("/v1/audio/speech", json.dumps(body).encode(), {"Content-Type": "application/json"}))
         to_wav(raw, out_wav)
         return
@@ -422,6 +434,47 @@ def tts(text, out_wav, provider):
 def to_wav(src, out_wav):
     subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", str(src),
                     "-ar", "24000", "-ac", "1", "-sample_fmt", "s16", str(out_wav)], check=True)
+
+
+def breathe(path, short=(0.08, 0.24), long=(0.20, 0.45)):
+    """
+    Lengthens the pauses already inside a take: gaps of 80 ms+ (commas) become 240 ms, gaps of 200 ms+
+    (sentence ends) at least 450 ms. Shorter gaps can be the closure inside a consonant, so they stay.
+    """
+    with wave.open(str(path)) as w:
+        rate, data = w.getframerate(), array.array("h", w.readframes(w.getnframes()))
+    n = int(rate * 0.01)
+    rms = [math.sqrt(sum(v * v for v in data[i:i + n]) / n) for i in range(0, len(data) - n, n)]
+    loudest = max(rms, default=0)
+    if loudest == 0:
+        return
+    silent = [r < loudest * 0.04 for r in rms]  # about -28 dB under the loudest 10 ms
+    if False not in silent:
+        return
+    first, last = silent.index(False), len(silent) - 1 - silent[::-1].index(False)
+
+    out, cursor, i = array.array("h"), 0, first
+    while i < last:  # interior silences only; leading/trailing silence is left alone
+        if not silent[i]:
+            i += 1
+            continue
+        j = i
+        while j < last and silent[j]:
+            j += 1
+        gap = (j - i) * 0.01
+        target = long[1] if gap >= long[0] else short[1] if gap >= short[0] else gap
+        if target > gap:
+            mid = (i + (j - i) // 2) * n  # insert in the middle of the gap, where it's quietest
+            out.extend(data[cursor:mid])
+            out.extend(array.array("h", [0]) * int((target - gap) * rate))
+            cursor = mid
+        i = j
+    out.extend(data[cursor:])
+    with wave.open(str(path), "wb") as w:
+        w.setnchannels(1)
+        w.setsampwidth(2)
+        w.setframerate(rate)
+        w.writeframes(out.tobytes())
 
 
 def wav_seconds(path):
@@ -474,7 +527,8 @@ def render(script_path):
     audio_parts, timings, start = [], [], 0.0
     for i, scene in enumerate(script["scenes"]):
         wav = work / f"scene{i:02}.wav"
-        tts(scene["narration"], wav, provider)
+        tts(scene["narration"], wav, provider, lang)
+        breathe(wav)
         speech = wav_seconds(wav)
         audio_parts.append((wav, SCENE_GAP))
         timings.append({"start": round(start, 3), "speech": round(speech, 3), "duration": round(speech + SCENE_GAP, 3)})
