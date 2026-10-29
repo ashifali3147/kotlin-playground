@@ -27,7 +27,7 @@ Your file: [`ReportExporter.kt`](ReportExporter.kt)
 
 ## Run
 ```bash
-./gradlew test --tests "challenges.threads.C07*"
+./dojo T07
 ```
 Read the thread dump from the "many sections" test. Look at **what** each pool thread is waiting for.
 

@@ -35,7 +35,7 @@ Your file: [`OutboxSyncEngine.kt`](OutboxSyncEngine.kt)
 
 ## Run
 ```bash
-./gradlew test --tests "challenges.boss.B02*"
+./dojo B02
 ```
 
 ## Debrief (write in `JOURNAL.md` before asking for a review)

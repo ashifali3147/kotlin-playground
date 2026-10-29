@@ -27,7 +27,7 @@ Make `events` a correct one-shot event stream:
 
 ## Run
 ```bash
-./gradlew test --tests "challenges.flow.F03*"
+./dojo F03
 ```
 These tests use [Turbine](https://github.com/cashapp/turbine) (`flow.test { awaitItem() }`). It's worth learning: you'll see it in every modern Android codebase.
 

@@ -19,7 +19,7 @@ Your files:
 
 ## Run
 ```bash
-./gradlew test --tests "challenges.flow.F09*"
+./dojo F09
 ```
 
 ## What each puzzle tests (read after answering)

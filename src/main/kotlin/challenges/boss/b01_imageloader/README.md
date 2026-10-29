@@ -37,7 +37,7 @@ Your file: [`ImageLoader.kt`](ImageLoader.kt)
 
 ## Run
 ```bash
-./gradlew test --tests "challenges.boss.B01*"
+./dojo B01
 ```
 
 ## Debrief (write in `JOURNAL.md` before asking for a review)

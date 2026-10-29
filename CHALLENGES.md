@@ -8,15 +8,29 @@ No DSA. No copy-paste. You remember what you struggle through.
 1. **Pick** the next challenge in the tables below and open its `README.md`.
 2. **Run the tests.** Watch them go red and read the failure output. The failure is a clue.
 3. **Investigate before fixing.** Form a theory and prove it with an experiment, not a guess.
-4. **Fix** until it's green: `./gradlew test --tests "challenges.threads.C01*"`
+4. **Fix** until it's green: `./dojo T01` (add `-d` to see why a test failed, where, and what it printed)
 5. **Journal**: answer the README's questions in [`JOURNAL.md`](JOURNAL.md), in your own words, from memory.
 6. **Review**: ask Claude *"review T01"*. You'll get a score, a better approach (if there is one),
    and interviewer follow-up questions.
 7. **Update** [`PROGRESS.md`](PROGRESS.md).
-8. **Revisit**: about 2 weeks later, ask for a *variant* of a solved challenge and solve it cold.
+8. **Recap** *(optional)*: `./dojo recap T01` turns your fix + journal entry into a ~45s vertical video.
+9. **Revisit**: about 2 weeks later, ask for a *variant* of a solved challenge and solve it cold.
 
 **Rules:** no AI while solving. Don't edit test files. Hints are layered, so open one only after a real attempt.
 Being stuck for 45 minutes is part of the training, not a failure.
+
+## Recap videos 🎬
+
+`./dojo recap K01` only runs once K01 is green **and** has a journal entry: the video is built from *your*
+explanation. It writes the script with Claude (`claude -p`), voices it, and renders a 1080×1920 short with
+captions to `recaps/K01/`: `K01.mp4`, `cover.png`, `post.txt` (title, caption and hashtags for posting).
+
+- Want different wording? Edit `recaps/K01/script.json` and run the command again: it re-renders without
+  rewriting. `--rewrite` asks Claude for a fresh script.
+- Voice: macOS `say` by default (`DOJO_VOICE=Rishi`, `DOJO_VOICE_RATE=180` to tune). For publishing, set
+  `DOJO_TTS=openai` + `OPENAI_API_KEY`, or `DOJO_TTS=elevenlabs` + `ELEVENLABS_API_KEY` (+ `DOJO_VOICE`).
+- `DOJO_CHANNEL=@yourhandle` adds "Follow @yourhandle for more" to the last scene.
+- Needs `ffmpeg` (`brew install ffmpeg`). Only `script.json` and `post.txt` are tracked in git.
 
 ## How a review is scored (/10)
 

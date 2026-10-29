@@ -30,7 +30,7 @@ Your file: [`RiderLocationFeed.kt`](RiderLocationFeed.kt)
 
 ## Run
 ```bash
-./gradlew test --tests "challenges.flow.F06*"
+./dojo F06
 ```
 
 ## Before asking for a review, write in `JOURNAL.md`

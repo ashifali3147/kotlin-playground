@@ -1,0 +1,85 @@
+#!/usr/bin/env bash
+# Run challenge tests with clean pass/fail output.
+#
+#   ./dojo K01          one challenge (T01..T08, K01..K10, F01..F09, B01..B03)
+#   ./dojo K01 -d       ...plus why each test failed, where, and what it printed
+#   ./dojo K01 K02      several
+#   ./dojo              everything
+#   ./dojo recap K01    after solving + journaling: make a short recap video (recaps/K01/)
+#   ./dojo recap K01 --rewrite   regenerate the script instead of re-rendering the existing one
+set -uo pipefail
+cd "$(dirname "$0")"
+
+if [[ "${1:-}" == "recap" ]]; then
+  shift
+  id="" rewrite=false
+  for arg in "$@"; do
+    case "$arg" in
+      --rewrite) rewrite=true ;;
+      *) id=$(echo "$arg" | tr '[:lower:]' '[:upper:]') ;;
+    esac
+  done
+  [[ -n "$id" ]] || { echo "  usage: ./dojo recap <ID> [--rewrite]"; exit 2; }
+  command -v ffmpeg >/dev/null || { echo "  ✘ ffmpeg is missing: brew install ffmpeg"; exit 1; }
+
+  "$0" "$id" || { echo "  Solve it first: a recap needs all of $id's tests green."; exit 1; }
+
+  py=build/recap/.venv/bin/python
+  if [[ ! -x "$py" ]]; then
+    echo "  Setting up the video toolkit (one time)..."
+    python3 -m venv build/recap/.venv && build/recap/.venv/bin/pip install -q pillow pygments || exit 1
+  fi
+
+  script="recaps/$id/script.json"
+  if [[ ! -f "$script" || "$rewrite" == true ]]; then
+    prompt="build/recap/$id-prompt.md" reply="build/recap/$id-reply.txt"
+    "$py" tools/recap/recap.py prompt "$id" > "$prompt" || exit 1
+    echo "  ✍️  Claude is writing the script from your journal + diff..."
+    claude -p --output-format text < "$prompt" > "$reply" || { echo "  ✘ claude -p failed"; exit 1; }
+    "$py" tools/recap/recap.py save "$id" "$reply" >/dev/null || exit 1
+    echo "  Script: $script  (edit any text, then run this again to re-render)"
+  fi
+  exec "$py" tools/recap/recap.py render "$script"
+fi
+
+details=false
+filters=()
+for arg in "$@"; do
+  case "$arg" in
+    -d|--details) details=true ;;
+    -h|--help) awk 'NR > 1 && /^#/ { sub(/^# ?/, ""); print; next } NR > 1 { exit }' "$0"; exit 0 ;;
+    *)
+      id=$(echo "$arg" | tr '[:lower:]' '[:upper:]')
+      # The threads track is T01..T08 in the docs but C01..C08 in test class names.
+      [[ "$id" == T* ]] && id="C${id#T}"
+      filters+=(--tests "challenges.*.${id}*")
+      ;;
+  esac
+done
+
+color=true
+[[ -t 1 && -z "${NO_COLOR:-}" ]] || color=false
+
+marker=build/dojo/last-run.txt
+log=$(mktemp)
+trap 'rm -f "$log"' EXIT
+rm -f "$marker"
+
+DOJO_SCRIPT=1 ./gradlew test ${filters[@]+"${filters[@]}"} --rerun -q --console=plain \
+  -Pdojo.details="$details" -Pdojo.color="$color" 2>"$log"
+status=$?
+
+if [[ ! -f "$marker" ]]; then
+  # Tests never ran, so this is a compile error or a bad filter: show Gradle's real output.
+  if grep -q '^e: ' "$log"; then
+    echo
+    echo "  ✘ Doesn't compile:"
+    grep '^e: ' "$log" | sed -E 's#^e: file://'"$PWD"'/#    #'
+    echo
+  elif grep -q 'No tests found' "$log"; then
+    echo "  No challenge matches: $*"
+  else
+    cat "$log"
+  fi
+fi
+exit $status

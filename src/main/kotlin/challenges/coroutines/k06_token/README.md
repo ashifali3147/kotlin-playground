@@ -26,7 +26,7 @@ Your file: [`AuthTokenProvider.kt`](AuthTokenProvider.kt)
 
 ## Run
 ```bash
-./gradlew test --tests "challenges.coroutines.K06*"
+./dojo K06
 ```
 
 ## Before asking for a review, write in `JOURNAL.md`

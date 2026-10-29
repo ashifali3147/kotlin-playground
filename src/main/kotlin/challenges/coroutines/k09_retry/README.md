@@ -28,7 +28,7 @@ Your file: [`RetryWithBackoff.kt`](RetryWithBackoff.kt). It's a `TODO()`.
 
 ## Run
 ```bash
-./gradlew test --tests "challenges.coroutines.K09*"
+./dojo K09
 ```
 The tests check the exact timing of each attempt with virtual time.
 

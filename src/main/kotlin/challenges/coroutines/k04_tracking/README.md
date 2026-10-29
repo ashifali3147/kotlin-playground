@@ -29,7 +29,7 @@ Your file: [`OrderTracker.kt`](OrderTracker.kt)
 
 ## Run
 ```bash
-./gradlew test --tests "challenges.coroutines.K04*"
+./dojo K04
 ```
 
 ## Before asking for a review, write in `JOURNAL.md`

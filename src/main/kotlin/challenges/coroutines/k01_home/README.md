@@ -26,7 +26,7 @@ Your file: [`HomeRepository.kt`](HomeRepository.kt)
 
 ## Run
 ```bash
-./gradlew test --tests "challenges.coroutines.K01*"
+./dojo K01
 ```
 The tests use `runTest`, which runs on **virtual time**: `delay(500)` finishes instantly, but
 `currentTime` says 500. Read about `kotlinx-coroutines-test` if this is new. You'll use it in every interview take-home.

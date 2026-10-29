@@ -26,7 +26,7 @@ Your file: [`SearchViewModel.kt`](SearchViewModel.kt)
 
 ## Run
 ```bash
-./gradlew test --tests "challenges.flow.F02*"
+./dojo F02
 ```
 
 ## Before asking for a review, write in `JOURNAL.md`

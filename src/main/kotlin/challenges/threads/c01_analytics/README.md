@@ -27,7 +27,7 @@ Make `AnalyticsTracker` correct when **any number of threads** call any method a
 
 ## Run
 ```bash
-./gradlew test --tests "challenges.threads.C01*"
+./dojo T01
 ```
 You're done when it's all green, **and you can explain why each test was failing.**
 

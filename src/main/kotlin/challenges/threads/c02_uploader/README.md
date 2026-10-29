@@ -24,7 +24,7 @@ Make `stop()` actually stop the worker, and make it honour its contract:
 
 ## Run
 ```bash
-./gradlew test --tests "challenges.threads.C02*"
+./dojo T02
 ```
 
 ## Before asking for a review, write in `JOURNAL.md`
