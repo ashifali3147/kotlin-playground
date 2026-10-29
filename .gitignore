@@ -10,3 +10,7 @@ gradle/gradle-daemon-jvm.properties
 
 # OS
 .DS_Store
+
+# Recap videos are rebuilt from recaps/<ID>/script.json
+recaps/*/*.mp4
+recaps/*/*.png
