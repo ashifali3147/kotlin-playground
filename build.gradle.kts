@@ -26,9 +26,7 @@ dependencies {
 
 tasks.test {
     useJUnitPlatform()
-    testLogging {
-        events("passed", "failed", "skipped")
-        exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
-        showStandardStreams = true
-    }
 }
+
+// Pretty pass/fail output for the challenges. See the header of this file for flags.
+apply(from = "gradle/dojo-reporter.gradle.kts")

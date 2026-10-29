@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+# Run challenge tests with clean pass/fail output.
+#
+#   ./dojo K01          one challenge (T01..T08, K01..K10, F01..F09, B01..B03)
+#   ./dojo K01 -d       ...plus why each test failed, where, and what it printed
+#   ./dojo K01 K02      several
+#   ./dojo              everything
+set -uo pipefail
+cd "$(dirname "$0")"
+
+details=false
+filters=()
+for arg in "$@"; do
+  case "$arg" in
+    -d|--details) details=true ;;
+    -h|--help) awk 'NR > 1 && /^#/ { sub(/^# ?/, ""); print; next } NR > 1 { exit }' "$0"; exit 0 ;;
+    *)
+      id=$(echo "$arg" | tr '[:lower:]' '[:upper:]')
+      # The threads track is T01..T08 in the docs but C01..C08 in test class names.
+      [[ "$id" == T* ]] && id="C${id#T}"
+      filters+=(--tests "challenges.*.${id}*")
+      ;;
+  esac
+done
+
+color=true
+[[ -t 1 && -z "${NO_COLOR:-}" ]] || color=false
+
+marker=build/dojo/last-run.txt
+log=$(mktemp)
+trap 'rm -f "$log"' EXIT
+rm -f "$marker"
+
+DOJO_SCRIPT=1 ./gradlew test ${filters[@]+"${filters[@]}"} --rerun -q --console=plain \
+  -Pdojo.details="$details" -Pdojo.color="$color" 2>"$log"
+status=$?
+
+if [[ ! -f "$marker" ]]; then
+  # Tests never ran, so this is a compile error or a bad filter: show Gradle's real output.
+  if grep -q '^e: ' "$log"; then
+    echo
+    echo "  ✘ Doesn't compile:"
+    grep '^e: ' "$log" | sed -E 's#^e: file://'"$PWD"'/#    #'
+    echo
+  elif grep -q 'No tests found' "$log"; then
+    echo "  No challenge matches: $*"
+  else
+    cat "$log"
+  fi
+fi
+exit $status
