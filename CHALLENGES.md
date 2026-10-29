@@ -36,9 +36,10 @@ explanation. Claude (`claude -p`) writes the script, the voice reads it, and
   rewriting. `--rewrite` asks Claude for a fresh script. `npm run studio` in `tools/recap/video` previews
   the animation in the browser.
 - **Voice:** [VoiceStudio](https://github.com/debpalash/VoiceStudio) (free, local) whenever its app is open,
-  otherwise macOS `say`. Every recap uses one calm male voice, the "Dojo Narrator" profile, which the first
-  recap creates in VoiceStudio automatically. Use another saved voice with `DOJO_VOICE=<name>` (list them:
-  `curl localhost:3900/v1/audio/voices`). Force one with `DOJO_TTS=voicestudio|say|openai|elevenlabs`;
+  otherwise macOS `say`. Every recap uses one friendly male voice, the "Dojo Narrator" profile, which the
+  first recap creates in VoiceStudio automatically. It speaks at 0.92× (`DOJO_VOICE_SPEED=1.0` for normal
+  pace), and the pauses at commas and full stops are lengthened after voicing. Use another saved voice with
+  `DOJO_VOICE=<name>` (list them: `curl localhost:3900/v1/audio/voices`). Force one with `DOJO_TTS=voicestudio|say|openai|elevenlabs`;
   `say` takes `DOJO_VOICE=Rishi`, `DOJO_VOICE_RATE=180`. OpenAI/ElevenLabs need `OPENAI_API_KEY` /
   `ELEVENLABS_API_KEY`.
 - `DOJO_CHANNEL=@yourhandle` adds "Follow @yourhandle for more" to the last scene.
