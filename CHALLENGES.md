@@ -27,8 +27,11 @@ captions to `recaps/K01/`: `K01.mp4`, `cover.png`, `post.txt` (title, caption an
 
 - Want different wording? Edit `recaps/K01/script.json` and run the command again: it re-renders without
   rewriting. `--rewrite` asks Claude for a fresh script.
-- Voice: macOS `say` by default (`DOJO_VOICE=Rishi`, `DOJO_VOICE_RATE=180` to tune). For publishing, set
-  `DOJO_TTS=openai` + `OPENAI_API_KEY`, or `DOJO_TTS=elevenlabs` + `ELEVENLABS_API_KEY` (+ `DOJO_VOICE`).
+- Voice: [VoiceStudio](https://github.com/debpalash/VoiceStudio) (free, local) whenever its app is open,
+  otherwise macOS `say`. Pick a VoiceStudio voice with `DOJO_VOICE=<name>` (list them:
+  `curl localhost:3900/v1/audio/voices`). Force one with `DOJO_TTS=voicestudio|say|openai|elevenlabs`;
+  `say` takes `DOJO_VOICE=Rishi`, `DOJO_VOICE_RATE=180`. OpenAI/ElevenLabs need `OPENAI_API_KEY` /
+  `ELEVENLABS_API_KEY`.
 - `DOJO_CHANNEL=@yourhandle` adds "Follow @yourhandle for more" to the last scene.
 - Needs `ffmpeg` (`brew install ffmpeg`). Only `script.json` and `post.txt` are tracked in git.
 

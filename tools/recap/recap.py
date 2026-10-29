@@ -4,7 +4,8 @@
     recap.py save <ID> <raw-file>     extract and validate the JSON script, write recaps/<ID>/script.json
     recap.py render <script.json>     render <dir of script>/<ID>.mp4, cover.png, post.txt
 
-Normally driven by `./dojo recap <ID>`. Voice is picked by DOJO_TTS (say | openai | elevenlabs).
+Normally driven by `./dojo recap <ID>`. Voice is picked by DOJO_TTS (voicestudio | say | openai | elevenlabs);
+unset means VoiceStudio when its local backend is running, else macOS say.
 """
 
 import json
@@ -13,6 +14,7 @@ import re
 import shutil
 import subprocess
 import sys
+import urllib.error
 import urllib.request
 import wave
 from pathlib import Path
@@ -206,10 +208,56 @@ def validate(script):
 
 # ---------------------------------------------------------------- voice
 
-def tts(text, out_wav):
+VOICESTUDIO_URL = os.environ.get("DOJO_VOICESTUDIO_URL", "http://127.0.0.1:3900").rstrip("/")
+
+
+def voicestudio_up():
+    try:
+        # A closed port fails instantly; the long timeout only covers a backend that's still warming up.
+        with urllib.request.urlopen(f"{VOICESTUDIO_URL}/v1/audio/voices", timeout=20) as resp:
+            return resp.status == 200
+    except OSError:
+        return False
+
+
+def tts_provider():
+    chosen = os.environ.get("DOJO_TTS")
+    if chosen:
+        if chosen == "voicestudio" and not voicestudio_up():
+            die(f"VoiceStudio isn't answering at {VOICESTUDIO_URL}. Open the VoiceStudio app first.")
+        return chosen
+    if voicestudio_up():
+        return "voicestudio"
+    print("  (VoiceStudio isn't running, using macOS say. Open the app for a better voice.)")
+    return "say"
+
+
+def tts(text, out_wav, provider):
     """Writes 24 kHz mono 16-bit WAV."""
-    provider = os.environ.get("DOJO_TTS", "say")
     raw = out_wav.with_suffix(".raw")
+    if provider == "voicestudio":
+        # OpenAI-compatible endpoint of the local VoiceStudio backend; loopback needs no key.
+        body = {
+            "model": "tts-1",
+            "voice": os.environ.get("DOJO_VOICE", "alloy"),
+            "input": text,
+            "response_format": "wav",
+        }
+        req = urllib.request.Request(
+            f"{VOICESTUDIO_URL}/v1/audio/speech", data=json.dumps(body).encode(),
+            headers={"Content-Type": "application/json"})
+        try:
+            with urllib.request.urlopen(req, timeout=300) as resp:
+                raw.write_bytes(resp.read())
+        except urllib.error.HTTPError as e:
+            body = e.read().decode(errors="replace")
+            try:
+                body = json.loads(body)["error"]["message"]
+            except (ValueError, KeyError, TypeError):
+                body = body[:300]
+            die(f"VoiceStudio said HTTP {e.code}: {body}")
+        to_wav(raw, out_wav)
+        return
     if provider == "say":
         voice = os.environ.get("DOJO_VOICE", "Samantha")
         rate = os.environ.get("DOJO_VOICE_RATE", "190")
@@ -237,7 +285,7 @@ def tts(text, out_wav):
             f"https://api.elevenlabs.io/v1/text-to-speech/{voice}?output_format=pcm_24000",
             data=json.dumps(body).encode(), headers={"xi-api-key": key, "Content-Type": "application/json"})
     else:
-        die(f"Unknown DOJO_TTS={provider!r} (use say, openai or elevenlabs)")
+        die(f"Unknown DOJO_TTS={provider!r} (use voicestudio, say, openai or elevenlabs)")
     with urllib.request.urlopen(req, timeout=120) as resp:
         raw.write_bytes(resp.read())
     subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-f", "s16le", "-ar", "24000", "-ac", "1",
@@ -453,11 +501,12 @@ def render(script_path):
     shutil.rmtree(work, ignore_errors=True)
     work.mkdir(parents=True)
 
-    print(f"  🎙  voice ({os.environ.get('DOJO_TTS', 'say')})")
+    provider = tts_provider()
+    print(f"  🎙  voice ({provider})")
     audio_parts, timings = [], []
     for i, scene in enumerate(script["scenes"]):
         wav = work / f"scene{i:02}.wav"
-        tts(scene["narration"], wav)
+        tts(scene["narration"], wav, provider)
         audio_parts.append((wav, SCENE_GAP))
         timings.append(wav_seconds(wav))
     concat_audio(audio_parts, work / "voice.wav")
