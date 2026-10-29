@@ -35,5 +35,6 @@ Interview-practice challenges on threads, coroutines and Flow live in `src/main/
 Start at [CHALLENGES.md](CHALLENGES.md).
 
 ```bash
-./gradlew test --tests "challenges.threads.C01*"
+./dojo T01       # pass/fail per test
+./dojo T01 -d    # plus why each failure happened, where, and what it printed
 ```

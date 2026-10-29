@@ -24,7 +24,7 @@ Your file: [`MenuImagePrefetcher.kt`](MenuImagePrefetcher.kt)
 
 ## Run
 ```bash
-./gradlew test --tests "challenges.coroutines.K05*"
+./dojo K05
 ```
 
 ## Before asking for a review, write in `JOURNAL.md`

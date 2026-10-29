@@ -25,7 +25,7 @@ Your file: [`PhotoUploader.kt`](PhotoUploader.kt)
 
 ## Run
 ```bash
-./gradlew test --tests "challenges.coroutines.K07*"
+./dojo K07
 ```
 
 ## Before asking for a review, write in `JOURNAL.md`

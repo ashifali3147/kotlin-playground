@@ -22,7 +22,7 @@ for both the blocking disk I/O and the CPU-heavy rendering. It must still work w
 
 ## Run
 ```bash
-./gradlew test --tests "challenges.coroutines.K02*"
+./dojo K02
 ```
 The tests use a fake single-threaded "main" dispatcher and count animation frames, like Choreographer does.
 

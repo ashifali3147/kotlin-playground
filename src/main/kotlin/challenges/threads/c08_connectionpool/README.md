@@ -39,7 +39,7 @@ Your file: [`ConnectionPool.kt`](ConnectionPool.kt). All methods are `TODO()`.
 
 ## Run
 ```bash
-./gradlew test --tests "challenges.threads.C08*"
+./dojo T08
 ```
 
 ## Before asking for a review, write in `JOURNAL.md`

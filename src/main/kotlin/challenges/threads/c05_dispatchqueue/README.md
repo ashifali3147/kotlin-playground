@@ -25,7 +25,7 @@ Make `OrderDispatchQueue` a correct bounded blocking queue for **any** number of
 
 ## Run
 ```bash
-./gradlew test --tests "challenges.threads.C05*"
+./dojo T05
 ```
 
 ## Before asking for a review, write in `JOURNAL.md`

@@ -19,7 +19,7 @@ Your files:
 
 ## Run
 ```bash
-./gradlew test --tests "challenges.coroutines.K10*"
+./dojo K10
 ```
 Each puzzle is a separate test. A wrong answer just says "wrong" until you turn on `REVEAL`.
 

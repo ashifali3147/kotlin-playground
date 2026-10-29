@@ -28,7 +28,7 @@ Your file: [`LocationRepository.kt`](LocationRepository.kt)
 
 ## Run
 ```bash
-./gradlew test --tests "challenges.coroutines.K08*"
+./dojo K08
 ```
 
 ## Before asking for a review, write in `JOURNAL.md`

@@ -25,7 +25,7 @@ Make `transfer()` safe under any amount of concurrency:
 
 ## Run
 ```bash
-./gradlew test --tests "challenges.threads.C03*"
+./dojo T03
 ```
 When the freeze test fails, **read the thread dump it prints.** Learning to read a thread dump
 is the actual skill here. It's the same thing you'll see in an ANR trace or a server hang.

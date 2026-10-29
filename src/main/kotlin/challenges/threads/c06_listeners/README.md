@@ -29,7 +29,7 @@ Some tests are already green. They're there to make sure your fix doesn't break 
 
 ## Run
 ```bash
-./gradlew test --tests "challenges.threads.C06*"
+./dojo T06
 ```
 
 ## Before asking for a review, write in `JOURNAL.md`

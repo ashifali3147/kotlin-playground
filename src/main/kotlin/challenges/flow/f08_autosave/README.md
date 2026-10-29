@@ -30,7 +30,7 @@ Your file: [`DraftAutoSaver.kt`](DraftAutoSaver.kt). Everything is `TODO()`.
 
 ## Run
 ```bash
-./gradlew test --tests "challenges.flow.F08*"
+./dojo F08
 ```
 
 ## Before asking for a review, write in `JOURNAL.md`

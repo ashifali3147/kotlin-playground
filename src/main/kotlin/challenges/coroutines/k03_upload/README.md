@@ -31,7 +31,7 @@ and a real failure (not a cancellation) still comes back as `Result.failure`.
 
 ## Run
 ```bash
-./gradlew test --tests "challenges.coroutines.K03*"
+./dojo K03
 ```
 
 ## Before asking for a review, write in `JOURNAL.md`

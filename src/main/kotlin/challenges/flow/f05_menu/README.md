@@ -30,7 +30,7 @@ Your file: [`MenuRepository.kt`](MenuRepository.kt)
 
 ## Run
 ```bash
-./gradlew test --tests "challenges.flow.F05*"
+./dojo F05
 ```
 
 ## Before asking for a review, write in `JOURNAL.md`

@@ -8,7 +8,7 @@ No DSA. No copy-paste. You remember what you struggle through.
 1. **Pick** the next challenge in the tables below and open its `README.md`.
 2. **Run the tests.** Watch them go red and read the failure output. The failure is a clue.
 3. **Investigate before fixing.** Form a theory and prove it with an experiment, not a guess.
-4. **Fix** until it's green: `./gradlew test --tests "challenges.threads.C01*"`
+4. **Fix** until it's green: `./dojo T01` (add `-d` to see why a test failed, where, and what it printed)
 5. **Journal**: answer the README's questions in [`JOURNAL.md`](JOURNAL.md), in your own words, from memory.
 6. **Review**: ask Claude *"review T01"*. You'll get a score, a better approach (if there is one),
    and interviewer follow-up questions.

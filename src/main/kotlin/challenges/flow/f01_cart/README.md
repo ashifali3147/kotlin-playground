@@ -29,7 +29,7 @@ Your file: [`CartRepository.kt`](CartRepository.kt)
 
 ## Run
 ```bash
-./gradlew test --tests "challenges.flow.F01*"
+./dojo F01
 ```
 
 ## Before asking for a review, write in `JOURNAL.md`

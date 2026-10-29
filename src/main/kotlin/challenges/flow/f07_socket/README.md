@@ -27,7 +27,7 @@ Your file: [`LiveOrderRepository.kt`](LiveOrderRepository.kt)
 
 ## Run
 ```bash
-./gradlew test --tests "challenges.flow.F07*"
+./dojo F07
 ```
 
 ## Before asking for a review, write in `JOURNAL.md`

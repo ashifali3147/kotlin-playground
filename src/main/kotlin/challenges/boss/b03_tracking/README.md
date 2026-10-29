@@ -38,7 +38,7 @@ Your file: [`TrackingViewModel.kt`](TrackingViewModel.kt)
 
 ## Run
 ```bash
-./gradlew test --tests "challenges.boss.B03*"
+./dojo B03
 ```
 
 ## Debrief (write in `JOURNAL.md` before asking for a review)

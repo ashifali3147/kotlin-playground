@@ -26,7 +26,7 @@ Make `AvatarCache` correct and fast:
 
 ## Run
 ```bash
-./gradlew test --tests "challenges.threads.C04*"
+./dojo T04
 ```
 
 ## Before asking for a review, write in `JOURNAL.md`

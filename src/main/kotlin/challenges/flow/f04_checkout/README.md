@@ -24,7 +24,7 @@ Your file: [`CheckoutViewModel.kt`](CheckoutViewModel.kt)
 
 ## Run
 ```bash
-./gradlew test --tests "challenges.flow.F04*"
+./dojo F04
 ```
 
 ## Before asking for a review, write in `JOURNAL.md`
