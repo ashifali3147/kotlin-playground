@@ -5,41 +5,47 @@
 #   ./dojo K01 -d       ...plus why each test failed, where, and what it printed
 #   ./dojo K01 K02      several
 #   ./dojo              everything
-#   ./dojo recap K01    after solving + journaling: make a short recap video (recaps/K01/)
+#   ./dojo recap K01    after solving + journaling: animated Hinglish recap video (recaps/K01/)
+#   ./dojo recap K01 --lang en   ...in English instead
 #   ./dojo recap K01 --rewrite   regenerate the script instead of re-rendering the existing one
 set -uo pipefail
 cd "$(dirname "$0")"
 
 if [[ "${1:-}" == "recap" ]]; then
   shift
-  id="" rewrite=false
-  for arg in "$@"; do
-    case "$arg" in
+  id="" rewrite=false lang=hi
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
       --rewrite) rewrite=true ;;
-      *) id=$(echo "$arg" | tr '[:lower:]' '[:upper:]') ;;
+      --lang) lang="${2:-}"; shift ;;
+      --lang=*) lang="${1#--lang=}" ;;
+      *) id=$(echo "$1" | tr '[:lower:]' '[:upper:]') ;;
     esac
+    shift
   done
-  [[ -n "$id" ]] || { echo "  usage: ./dojo recap <ID> [--rewrite]"; exit 2; }
+  [[ -n "$id" ]] || { echo "  usage: ./dojo recap <ID> [--lang hi|en] [--rewrite]"; exit 2; }
+  [[ "$lang" == hi || "$lang" == en ]] || { echo "  ✘ --lang must be hi or en"; exit 2; }
   command -v ffmpeg >/dev/null || { echo "  ✘ ffmpeg is missing: brew install ffmpeg"; exit 1; }
 
   "$0" "$id" || { echo "  Solve it first: a recap needs all of $id's tests green."; exit 1; }
 
-  py=build/recap/.venv/bin/python
-  if [[ ! -x "$py" ]]; then
+  command -v npm >/dev/null || { echo "  ✘ Node.js is missing: brew install node"; exit 1; }
+  if [[ ! -d tools/recap/video/node_modules ]]; then
     echo "  Setting up the video toolkit (one time)..."
-    python3 -m venv build/recap/.venv && build/recap/.venv/bin/pip install -q pillow pygments || exit 1
+    (cd tools/recap/video && npm ci --no-audit --no-fund) || exit 1
   fi
 
-  script="recaps/$id/script.json"
+  mkdir -p build/recap
+  script="recaps/$id/script.$lang.json"
   if [[ ! -f "$script" || "$rewrite" == true ]]; then
-    prompt="build/recap/$id-prompt.md" reply="build/recap/$id-reply.txt"
-    "$py" tools/recap/recap.py prompt "$id" > "$prompt" || exit 1
+    prompt="build/recap/$id.$lang-prompt.md" reply="build/recap/$id.$lang-reply.txt"
+    python3 tools/recap/recap.py prompt "$id" "$lang" > "$prompt" || exit 1
     echo "  ✍️  Claude is writing the script from your journal + diff..."
     claude -p --output-format text < "$prompt" > "$reply" || { echo "  ✘ claude -p failed"; exit 1; }
-    "$py" tools/recap/recap.py save "$id" "$reply" >/dev/null || exit 1
+    python3 tools/recap/recap.py save "$id" "$reply" "$lang" >/dev/null || exit 1
     echo "  Script: $script  (edit any text, then run this again to re-render)"
   fi
-  exec "$py" tools/recap/recap.py render "$script"
+  exec python3 tools/recap/recap.py render "$script"
 fi
 
 details=false

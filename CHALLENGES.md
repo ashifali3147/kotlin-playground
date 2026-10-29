@@ -22,18 +22,30 @@ Being stuck for 45 minutes is part of the training, not a failure.
 ## Recap videos 🎬
 
 `./dojo recap K01` only runs once K01 is green **and** has a journal entry: the video is built from *your*
-explanation. It writes the script with Claude (`claude -p`), voices it, and renders a 1080×1920 short with
-captions to `recaps/K01/`: `K01.mp4`, `cover.png`, `post.txt` (title, caption and hashtags for posting).
+explanation. Claude (`claude -p`) writes the script, the voice reads it, and
+[Remotion](https://www.remotion.dev) animates a ~60–80s 1080×1920 short into `recaps/K01/`:
+`K01.hi.mp4`, `cover.hi.png`, `post.hi.txt` (title, caption and hashtags).
 
-- Want different wording? Edit `recaps/K01/script.json` and run the command again: it re-renders without
-  rewriting. `--rewrite` asks Claude for a fresh script.
-- Voice: [VoiceStudio](https://github.com/debpalash/VoiceStudio) (free, local) whenever its app is open,
-  otherwise macOS `say`. Pick a VoiceStudio voice with `DOJO_VOICE=<name>` (list them:
-  `curl localhost:3900/v1/audio/voices`). Force one with `DOJO_TTS=voicestudio|say|openai|elevenlabs`;
+- **Language:** Hinglish voice-over by default, with all on-screen text and captions in English.
+  `--lang en` makes the voice English too.
+- **What's in it:** hook → symptom → a real-world analogy → an animated diagram of what happens inside
+  (timeline of threads, coroutine tree, Flow pipeline, memory references, or locks) → the bug typing out →
+  the bug morphing into your fix → the diagram again, fixed → why it works → interview tip → takeaway.
+  Captions highlight word by word.
+- **Different wording?** Edit `recaps/K01/script.hi.json` and run the command again: it re-renders without
+  rewriting. `--rewrite` asks Claude for a fresh script. `npm run studio` in `tools/recap/video` previews
+  the animation in the browser.
+- **Voice:** [VoiceStudio](https://github.com/debpalash/VoiceStudio) (free, local) whenever its app is open,
+  otherwise macOS `say`. Every recap uses one friendly male voice, the "Dojo Narrator" profile, which the
+  first recap creates in VoiceStudio automatically. It speaks at 0.92× (`DOJO_VOICE_SPEED=1.0` for normal
+  pace), and the pauses at commas and full stops are lengthened after voicing. Use another saved voice with
+  `DOJO_VOICE=<name>` (list them: `curl localhost:3900/v1/audio/voices`). Force one with `DOJO_TTS=voicestudio|say|openai|elevenlabs`;
   `say` takes `DOJO_VOICE=Rishi`, `DOJO_VOICE_RATE=180`. OpenAI/ElevenLabs need `OPENAI_API_KEY` /
   `ELEVENLABS_API_KEY`.
 - `DOJO_CHANNEL=@yourhandle` adds "Follow @yourhandle for more" to the last scene.
-- Needs `ffmpeg` (`brew install ffmpeg`). Only `script.json` and `post.txt` are tracked in git.
+- **Needs** `ffmpeg` and Node.js (`brew install ffmpeg node`); the first run installs the video toolkit
+  (`npm ci`, ~330 MB in `tools/recap/video/node_modules`). Only `script.*.json` and `post.*.txt` are
+  tracked in git.
 
 ## How a review is scored (/10)
 
